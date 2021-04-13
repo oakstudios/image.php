@@ -257,6 +257,10 @@ ini_set('memory_limit', MEMORY_TO_ALLOCATE);
 // Set up a blank canvas for our resized image (destination)
 $dst	= imagecreatetruecolor($tnWidth, $tnHeight);
 
+// Allow transparancy
+$transparent = imagecolorallocatealpha($dst, 255, 255, 255, 127);
+imagefill($dst, 0, 0, $transparent);
+
 // Set up the appropriate image handling functions based on the original image's mime type
 switch ($size['mime'])
 {
@@ -276,6 +280,13 @@ switch ($size['mime'])
 		$outputFunction		= 'ImagePng';
 		$doSharpen			= FALSE;
 		$quality			= smartImageResizeMap($quality, 0, 100, 0, 9); // PNG needs a compression level of 0 (no compression) through 9
+	break;
+
+	case 'image/x-webp':
+	case 'image/webp':
+		$creationFunction	= 'ImageCreateFromWebP';
+		$outputFunction		= 'ImageWebP';
+		$doSharpen			= FALSE;
 	break;
 
 	default:
